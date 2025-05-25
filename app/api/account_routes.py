@@ -1,18 +1,10 @@
 from typing_extensions import Annotated
-from app.db import get_session
-from app.repository.account_repository import AccountRepository
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session
-
+from app.api.dependencies import get_account_service
 from app.models.account import Account
 from app.services.account_service import AccountService
 
 router = APIRouter()
-
-def get_account_service(session: Annotated[Session, Depends(get_session)]) -> AccountService:
-    repo = AccountRepository(session)
-    return AccountService(repo)
-
 
 @router.get("/account/{id}", response_model=Account)
 def get_account(id: int,

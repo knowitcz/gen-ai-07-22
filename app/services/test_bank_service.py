@@ -1,6 +1,6 @@
 import pytest
 from app.services.bank_service import BranchBankService, AtmBankService
-from app.validator.amount_validator import ValidationResult
+from app.validator.amount_validator import ValidationError, ValidationResult
 
 class AccountServiceDouble:
     def __init__(self):
@@ -68,7 +68,7 @@ def test_atmbankservice_deposit_at_atm_valid():
 def test_atmbankservice_deposit_at_atm_too_large():
     test_double = AccountServiceDouble()
     service = AtmBankService(test_double, strict_amount_validator)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         service.deposit_money_at_atm(1, 20000)
 
 def test_atmbankservice_deposit_at_branch_raises():
@@ -86,7 +86,7 @@ def test_atmbankservice_withdraw_at_atm_valid():
 def test_atmbankservice_withdraw_at_atm_too_large():
     test_double = AccountServiceDouble()
     service = AtmBankService(test_double, strict_amount_validator)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         service.withdraw_money_at_atm(1, 20000)
 
 def test_atmbankservice_withdraw_at_branch_raises():
