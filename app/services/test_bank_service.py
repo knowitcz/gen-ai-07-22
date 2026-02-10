@@ -27,34 +27,22 @@ def strict_amount_validator(amount: int) -> ValidationResult:
 
 # BranchBankService tests
 
-def test_branchbankservice_deposit_at_branch():
+def test_branchbankservice_deposit():
     test_double = AccountServiceDouble()
     service = BranchBankService(test_double)
-    service.deposit_money_at_branch(1, 100)
+    service.deposit_money(1, 100)
     assert test_double.deposits == [(1, 100)]
 
-def test_branchbankservice_deposit_at_atm_raises():
+def test_branchbankservice_withdraw():
     test_double = AccountServiceDouble()
     service = BranchBankService(test_double)
-    with pytest.raises(NotImplementedError):
-        service.deposit_money_at_atm(1, 100)
-
-def test_branchbankservice_withdraw_at_branch():
-    test_double = AccountServiceDouble()
-    service = BranchBankService(test_double)
-    service.withdraw_money_at_branch(1, 50)
+    service.withdraw_money(1, 50)
     assert test_double.withdrawals == [(1, 50)]
 
-def test_branchbankservice_withdraw_at_atm_raises():
+def test_branchbankservice_transfer():
     test_double = AccountServiceDouble()
     service = BranchBankService(test_double)
-    with pytest.raises(NotImplementedError):
-        service.withdraw_money_at_atm(1, 50)
-
-def test_branchbankservice_transfer_at_branch():
-    test_double = AccountServiceDouble()
-    service = BranchBankService(test_double)
-    service.make_transfer_at_branch(1, 2, 200)
+    service.transfer_money(1, 2, 200)
     assert test_double.transfers == [(1, 2, 200)]
 
 # AtmBankService tests
@@ -62,41 +50,23 @@ def test_branchbankservice_transfer_at_branch():
 def test_atmbankservice_deposit_at_atm_valid():
     test_double = AccountServiceDouble()
     service = AtmBankService(test_double, dummy_validator)
-    service.deposit_money_at_atm(1, 100)
+    service.deposit_money(1, 100)
     assert test_double.deposits == [(1, 100)]
 
-def test_atmbankservice_deposit_at_atm_too_large():
+def test_atmbankservice_deposit_too_large():
     test_double = AccountServiceDouble()
     service = AtmBankService(test_double, strict_amount_validator)
     with pytest.raises(ValidationError):
-        service.deposit_money_at_atm(1, 20000)
+        service.deposit_money(1, 20000)
 
-def test_atmbankservice_deposit_at_branch_raises():
+def test_atmbankservice_withdraw_valid():
     test_double = AccountServiceDouble()
     service = AtmBankService(test_double, dummy_validator)
-    with pytest.raises(NotImplementedError):
-        service.deposit_money_at_branch(1, 100)
-
-def test_atmbankservice_withdraw_at_atm_valid():
-    test_double = AccountServiceDouble()
-    service = AtmBankService(test_double, dummy_validator)
-    service.withdraw_money_at_atm(1, 100)
+    service.withdraw_money(1, 100)
     assert test_double.withdrawals == [(1, 100)]
 
-def test_atmbankservice_withdraw_at_atm_too_large():
+def test_atmbankservice_withdraw_too_large():
     test_double = AccountServiceDouble()
     service = AtmBankService(test_double, strict_amount_validator)
     with pytest.raises(ValidationError):
-        service.withdraw_money_at_atm(1, 20000)
-
-def test_atmbankservice_withdraw_at_branch_raises():
-    test_double = AccountServiceDouble()
-    service = AtmBankService(test_double, dummy_validator)
-    with pytest.raises(NotImplementedError):
-        service.withdraw_money_at_branch(1, 100)
-
-def test_atmbankservice_transfer_at_branch_raises():
-    test_double = AccountServiceDouble()
-    service = AtmBankService(test_double, dummy_validator)
-    with pytest.raises(NotImplementedError):
-        service.make_transfer_at_branch(1, 2, 300)
+        service.withdraw_money(1, 20000)
